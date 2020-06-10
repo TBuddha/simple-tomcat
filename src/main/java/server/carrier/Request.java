@@ -1,8 +1,8 @@
-package p1.server.carrier;
+package server.carrier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import p1.server.util.ArrayUtil;
+import server.util.ArrayUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

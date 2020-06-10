@@ -1,4 +1,4 @@
-package p1.server.util;
+package server.util;
 
 /**
  * @author zhout

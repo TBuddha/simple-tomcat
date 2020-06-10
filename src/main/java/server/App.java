@@ -1,9 +1,9 @@
-package p1.server;
+package server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import p1.server.carrier.Request;
-import p1.server.carrier.Response;
+import server.carrier.Request;
+import server.carrier.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +82,7 @@ public class App {
     try {
       serverSocket.close();
     } catch (IOException e) {
-      LOGGER.error("Shutdown p1.server is fail!", e);
+      LOGGER.error("Shutdown server is fail!", e);
     }
   }
 }

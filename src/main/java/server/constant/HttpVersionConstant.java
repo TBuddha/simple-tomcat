@@ -1,4 +1,4 @@
-package p1.server.constant;
+package server.constant;
 
 /**
  * @author zhout

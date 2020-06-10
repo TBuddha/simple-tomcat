@@ -1,11 +1,11 @@
-package p1.server.carrier;
+package server.carrier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import p1.server.App;
-import p1.server.constant.HttpVersionConstant;
-import p1.server.enums.HttpStatusEnum;
-import p1.server.util.ArrayUtil;
+import server.App;
+import server.constant.HttpVersionConstant;
+import server.enums.HttpStatusEnum;
+import server.util.ArrayUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
