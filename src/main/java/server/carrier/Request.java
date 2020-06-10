@@ -21,6 +21,7 @@ public class Request {
 
   /** 解析用户的请求 */
   public void parseRequest() {
+    //new 一个 byte缓冲数组
     StringBuilder request = new StringBuilder();
     int i;
     byte[] buffer = ArrayUtil.generatorCache();
@@ -30,10 +31,12 @@ public class Request {
       e.printStackTrace();
       i = -1;
     }
+    //将读取到的byte转为String
     for (int j = 0; j < i; j++) {
       request.append((char) buffer[j]);
     }
     LOGGER.trace("parse request {}", request.toString());
+    //解析请求的字符串，提取请求的URI
     this.setUri(request.toString());
   }
 

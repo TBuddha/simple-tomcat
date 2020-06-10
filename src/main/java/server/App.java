@@ -51,6 +51,7 @@ public class App {
   }
 
   private void await() {
+    //new 一个 byte缓冲数组
     ServerSocket serverSocket;
     try {
       serverSocket = new ServerSocket(PORT, 1, InetAddress.getByName(HOST));
