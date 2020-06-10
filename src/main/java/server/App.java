@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.carrier.Request;
 import server.carrier.Response;
+import server.process.ServletProcess;
+import server.process.StaticResourceProcess;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +53,7 @@ public class App {
   }
 
   private void await() {
-    //new 一个 byte缓冲数组
+    // new 一个 byte缓冲数组
     ServerSocket serverSocket;
     try {
       serverSocket = new ServerSocket(PORT, 1, InetAddress.getByName(HOST));
@@ -71,7 +73,12 @@ public class App {
         request.parseRequest();
         // 生成相应的响应
         Response response = new Response(outputStream, request);
-        response.accessStaticResources();
+        // 根据URI调用不同的处理器处理请求
+        if (Optional.ofNullable(request.getUri()).orElse("").startsWith("/servlet/")) {
+          new ServletProcess().process(request, response);
+        } else {
+          new StaticResourceProcess().process(request, response);
+        }
 
         // 如果本次请求是关闭服务器则修改标识为关闭
         shutDowned = SHUTDOWN_SERVER.equals(request.getUri());
