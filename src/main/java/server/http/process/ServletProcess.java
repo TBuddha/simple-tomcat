@@ -1,13 +1,13 @@
-package server.process;
+package server.http.process;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.App;
-import server.carrier.Request;
-import server.carrier.Response;
-import server.carrier.facade.RequestFacade;
-import server.carrier.facade.ResponseFacade;
+import server.connector.HttpConnector;
 import server.enums.HttpStatusEnum;
+import server.http.carrier.HttpRequest;
+import server.http.carrier.HttpResponse;
+import server.http.carrier.facade.HttpRequestFacade;
+import server.http.carrier.facade.HttpResponseFacade;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -28,7 +28,7 @@ public class ServletProcess {
   static {
     try {
       /*定位到我们的webroot/servlet/文件夹*/
-      URL servletClassPath = new File(App.WEB_PROJECT_ROOT, "servlet").toURI().toURL();
+      URL servletClassPath = new File(HttpConnector.WEB_PROJECT_ROOT, "servlet").toURI().toURL();
       // 初始化classloader
       URL_CLASS_LOADER = new URLClassLoader(new URL[] {servletClassPath});
     } catch (Exception e) {
@@ -43,10 +43,10 @@ public class ServletProcess {
    * @param request request对象
    * @param response response对象
    */
-  public void process(Request request, Response response) throws IOException {
+  public void process(HttpRequest request, HttpResponse response) throws IOException {
     // 根据请求的URI截取Servlet的名字
-    String servletName = this.parseServletName(request.getUri());
-    // 使用URLClassLoader加载这个Servlet并实例化
+    String servletName = this.parseServletName(request.getRequestURI());
+    // 使用URLClassLoader加载这个Servlet
     Class servletClass;
     try {
       servletClass = URL_CLASS_LOADER.loadClass(servletName);
@@ -59,17 +59,11 @@ public class ServletProcess {
     try {
       // 实例化这个Servlet
       Servlet servlet = (Servlet) servletClass.newInstance();
-      response.getWriter().println(new String(response.responseToByte(HttpStatusEnum.OK)));
-      // 调用servlet的service方法
-      // servlet.service(request, response);
-
-      // 处理缺陷
-      // 使用者顶多只能将ServletRequest/ServletResponse向下转型为RequestFacade/ResponseFacade
-      // 但是我们没提供getRequest()/getResponse()方法，所以它能调用的方法还是相应ServletRequest、ServletResponse接口定义的方法，
-      // 这样我们内部的方法就不会被用户调用到啦~
-      servlet.service(new RequestFacade(request), new ResponseFacade(response));
+      response.getWriter().print(new String(response.responseToByte(HttpStatusEnum.OK)));
+      servlet.service(new HttpRequestFacade(request), new HttpResponseFacade(response));
+      response.finishResponse();
     } catch (Exception e) {
-      LOGGER.info("Invoke Servlet {} is fail!", servletName);
+      LOGGER.info(String.format("Invoke Servlet %s is fail!", servletName), e);
     }
   }
 
